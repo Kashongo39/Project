@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        /* Body with background image and dark overlay */
+        body {
+            font-family: Arial, sans-serif;
+            background: url("{{ url_for('static', filename='admin.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        /* Dark overlay effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Darken the background */
+            z-index: -1; /* Ensure overlay is behind the content */
+        }
+
+        /* Container styling */
+        .container {
+            background: rgba(255, 255, 255, 0.15); /* Slightly transparent */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            text-align: center;
+            width: 500px;
+            backdrop-filter: blur(10px); /* Blur effect behind the content */
+        }
+
+        /* Header styling */
+        .container h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            color: white;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid white;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Action button styling */
+        .btn {
+            padding: 8px 12px;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #ff4b2b;
+        }
+
+        /* Logout button styling */
+        .logout-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff416c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff4b2b;
+        }
+
+        /* Footer styling */
+        footer {
+            width: 100%;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .developer-name {
+            font-weight: bold;
+            color: #1900ff;
+        }
+    </style>
+    <script>
+        function confirmDelete(userId) {
+            if (confirm("Are you sure you want to delete this user?")) {
+                fetch(`/admin/delete/${userId}`, { method: "POST" })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("User deleted successfully.");
+                            location.reload();
+                        } else {
+                            alert("Error deleting user.");
+                        }
+                    });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Dashboard</h2>
+        
+        <!-- Users Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Registration Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <!-- Formatting the registration date -->
+                        <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M:%S') if user.created_at else 'N/A' }}</td>
+                        <td>
+                            <button class="btn" onclick="confirmDelete({{ user.id }})">Delete</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Logout Button -->
+        <button class="logout-btn" onclick="window.location.href='/logout'">Logout</button>
+    </div>
+
+    <footer>
+        <p>© 2025 MCBS Project, Oman. All rights reserved. Developed by <span class="developer-name">Saif Al Harthi</span> and <span class="developer-name">Jumana Al Mahruqi</span>.</p>
+    </footer>
+</body>
+</html>

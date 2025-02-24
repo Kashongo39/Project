@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI ChatBot</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: url("{{ url_for('static', filename='background.gif') }}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        /* Dark overlay effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Darken the background */
+            z-index: -1; /* Ensure overlay is behind the content */
+        }
+
+        /* Welcome Message Container */
+        .welcome-container {
+            position: fixed;
+            top: 50%; /* Center vertically */
+            left: 40%; /* Center horizontally */
+            transform: translate(-50%, -50%); /* Adjust for centering */
+            width: 90%; /* Adjusted for smaller screens */
+            max-width: 400px; /* Maximum width for larger screens */
+            background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Semi-transparent border */
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            z-index: 2; /* Ensure it's below the chat window */
+            text-align: center;
+            backdrop-filter: blur(5px); /* Adds a subtle blur effect to the background */
+        }
+
+        .welcome-container h3 {
+            margin: 0 0 15px 0;
+            font-size: 22px;
+            color: #fff; /* White text for better contrast */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Text shadow for readability */
+        }
+
+        .welcome-container p {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #fff; /* White text for better contrast */
+            line-height: 1.6;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Text shadow for readability */
+        }
+
+        .welcome-container ul {
+            margin: 0 0 15px 0;
+            padding-left: 20px;
+            list-style-type: disc;
+            text-align: left;
+        }
+
+        .welcome-container ul li {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #fff; /* White text for better contrast */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Text shadow for readability */
+        }
+
+        .welcome-container .highlight {
+            font-weight: bold;
+            color: #4CAF50; /* Green for highlights */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Text shadow for readability */
+        }
+
+        /* Chat Container */
+        .chat-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 90%; /* Adjusted for smaller screens */
+            max-width: 400px; /* Maximum width for larger screens */
+            height: 70vh; /* Adjusted height for smaller screens */
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            bottom: 90px;
+            right: 5%; /* Centered on smaller screens */
+            display: none; /* Initially hidden */
+            z-index: 3; /* Ensure it's above the welcome message */
+        }
+
+        /* Chat Header */
+        .chat-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            position: relative;
+        }
+
+        /* Chat Box */
+        .chat-box {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+            background: #f9f9f9;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Messages */
+        .chat-box .user-message {
+            text-align: right;
+            color: #333;
+            background: #dcf8c6;
+            padding: 10px;
+            border-radius: 10px;
+            align-self: flex-end;
+            max-width: 70%;
+            margin-bottom: 10px;
+        }
+
+        .chat-box .bot-message {
+            text-align: left;
+            color: #555;
+            background: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            align-self: flex-start;
+            max-width: 70%;
+            margin-bottom: 10px;
+        }
+
+        /* Timestamp */
+        .timestamp {
+            font-size: 12px;
+            color: gray;
+            margin-top: 4px; /* Space between message and timestamp */
+            text-align: right; /* Align timestamp to the right */
+            display: block; /* Ensure it appears on a new line */
+        }
+
+        /* Input Container */
+        .input-container {
+            display: flex;
+            padding: 10px;
+            background: #fff;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            align-items: center;
+            border-top: 1px solid #eee;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        #send-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #send-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Floating Button */
+        .floating-btn {
+            position: fixed;
+            bottom: 50px; /* Adjusted to be slightly above the footer */
+            right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 4; /* Ensure it's above the chat window */
+        }
+
+        .floating-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: red;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 4; /* Ensure it's above the chat window */
+        }
+
+        .logout-btn:hover {
+            background: darkred;
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .developer-name {
+            font-weight: bold;
+            color: #1900ff;
+        }
+
+        /* Media Queries for Smartphones */
+        @media (max-width: 600px) {
+            .welcome-container {
+                width: 90%; /* Full width on small screens */
+                padding: 15px; /* Reduced padding */
+            }
+
+            .chat-container {
+                width: 95%; /* Full width on small screens */
+                right: 2.5%; /* Centered */
+                height: 60vh; /* Adjusted height */
+                z-index: 5; /* Ensure it's above everything on small screens */
+            }
+
+            .floating-btn {
+                bottom: 10px;
+                right: 10px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                z-index: 6; /* Ensure it's above the chat window */
+            }
+
+            #user-input {
+                font-size: 14px; /* Smaller font size for inputs */
+            }
+
+            #send-button {
+                padding: 8px 16px; /* Smaller button */
+            }
+
+            footer {
+                bottom: 10px;
+                left: 10px;
+                padding: 8px;
+                font-size: 14px; /* Smaller font size */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Message Container -->
+    <div class="welcome-container">
+        <h3>Welcome to Our AI ChatBot!</h3>
+        <p>Get instant assistance and answers to your questions with our AI-powered chatbot. Whether you need help, information, or just want to chat, we're here for you!</p>
+        <p class="highlight">Click the floating button below to start chatting.</p>
+        <ul>
+            <li><span class="highlight">Quick Responses</span>: Get instant answers to your questions.</li>
+            <li><span class="highlight">24/7 Support</span>: We're always available to help you.</li>
+            <li><span class="highlight">Easy to Use</span>: Just type your message and hit send.</li>
+        </ul>
+    </div>
+    <!-- Logout Button (Top-Right Corner) -->
+    <button class="logout-btn" onclick="window.location.href='{{ url_for('logout') }}';">Logout</button>
+
+    <!-- Floating Button -->
+    <button class="floating-btn" onclick="toggleChat()">💬</button>
+
+    <!-- Chat Window -->
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header">
+            <h3>AI ChatBot</h3>
+        </div>
+        <div class="chat-box" id="chat-box">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" onkeydown="if(event.key === 'Enter') sendMessage()">
+            <button id="send-button" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 MCBS Project, Oman. All rights reserved. Developed by <span class="developer-name">Saif Al Harthi</span> and <span class="developer-name">Jumana Al Mahruqi</span>.</p>
+    </footer>
+
+    <script>
+        // Toggle chat window visibility and handle welcome message container
+        function toggleChat() {
+            const chatContainer = document.getElementById('chat-container');
+            const welcomeContainer = document.querySelector('.welcome-container');
+
+            if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
+                // Open Chat Window
+                chatContainer.style.display = 'flex';
+                welcomeContainer.style.display = 'none'; // Hide Welcome Message Container
+            } else {
+                // Close Chat Window
+                chatContainer.style.display = 'none';
+                welcomeContainer.style.display = 'block'; // Show Welcome Message Container
+            }
+
+            resetInactivityTimer(); // Reset the timer when the chat window is toggled
+        }
+
+        // Send user message and handle bot response
+        async function sendMessage() {
+            const inputBox = document.getElementById('user-input');
+            const chatBox = document.getElementById('chat-box');
+            const userMessage = inputBox.value.trim();
+
+            if (!userMessage) return;
+
+            // Show user's message
+            chatBox.innerHTML += `<p class="user-message">${userMessage}<span class="timestamp">${new Date().toLocaleTimeString()}</span></p>`;
+            inputBox.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the latest message
+
+            try {
+                // Send message to server
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: userMessage })
+                });
+
+                const data = await response.json();
+                console.log("Server response:", data);  // Debugging statement
+
+                if (data.response) {
+                    // Show bot's response
+                    chatBox.innerHTML += `<p class="bot-message">${data.response}<span class="timestamp">${new Date().toLocaleTimeString()}</span></p>`;
+                    chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the latest message
+                } else if (data.error) {
+                    // Handle errors
+                    chatBox.innerHTML += `<p class="bot-message">Error: ${data.error}<span class="timestamp">${new Date().toLocaleTimeString()}</span></p>`;
+                }
+            } catch (error) {
+                console.error("Error sending message:", error);  // Debugging statement
+
+                // Handle errors
+                chatBox.innerHTML += `<p class="bot-message">An error occurred. Check the console for details.<span class="timestamp">${new Date().toLocaleTimeString()}</span></p>`;
+            }
+
+            resetInactivityTimer(); // Reset the timer when a message is sent
+        }
+
+        // Inactivity Timer
+        let inactivityTimer;
+
+        // Function to reset the inactivity timer
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer); // Clear the existing timer
+            inactivityTimer = setTimeout(logoutUser, 30 * 1000); // Set a new timer (30 seconds)
+        }
+
+        // Function to log out the user
+        function logoutUser() {
+            alert("You have been logged out due to inactivity.");
+            window.location.href = "{{ url_for('logout') }}"; // Redirect to the logout route
+        }
+
+        // Track user activity
+        document.addEventListener("mousemove", resetInactivityTimer);
+        document.addEventListener("keydown", resetInactivityTimer);
+    </script>
+</body>
+</html>

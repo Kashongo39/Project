@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - AI ChatBot</title>
+    <style>
+        /* Body with background image and dark overlay */
+        body {
+            font-family: Arial, sans-serif;
+            background: url("{{ url_for('static', filename='bg.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        /* Dark overlay effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Darken the background */
+            z-index: -1; /* Ensure overlay is behind the content */
+        }
+
+        /* Top-right navigation buttons */
+        .nav-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px; /* Space between buttons */
+        }
+
+        /* Button styling */
+        .nav-btn {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+            transform: scale(1.05);
+        }
+
+        /* Welcome Message Container (Smaller Size) */
+        .welcome-container {
+            background: rgba(255, 255, 255, 0.2); /* Slightly transparent */
+            padding: 0.5px; /* Smaller padding */
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            text-align: center;
+            width: 950px; /* Smaller width */
+            backdrop-filter: blur(10px); /* Blur effect behind the content */
+            margin: 1px; /* Space on all sides */
+            z-index: 1; /* Ensure it's above the overlay */
+        }
+
+        /* Header styling */
+        .welcome-container h1 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 3rem; /* Smaller font size */
+        }
+
+        /* Paragraph styling */
+        .welcome-container p {
+            color: white;
+            font-size: 1.2rem; /* Smaller font size */
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        /* Bordered Table-like Container for Expectations */
+        .expectations-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px; /* Smaller padding */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-top: 15px;
+        }
+
+        .expectations-container h3 {
+            color: #333;
+            font-size: 1.3rem; /* Smaller font size */
+            margin-bottom: 10px;
+        }
+
+        .expectations-container ul {
+            list-style-type: none;
+            padding-left: 15px; /* Smaller padding */
+        }
+
+        .expectations-container ul li {
+            background-color: #f9f9f9;
+            margin: 8px 0; /* Smaller margin */
+            padding: 8px; /* Smaller padding */
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 0.8rem; /* Smaller font size */
+            color: #555;
+            transition: transform 0.3s, background-color 0.3s ease-in-out;
+        }
+
+        .expectations-container ul li:hover {
+            transform: scale(1.05);
+            background-color: #ffe9e6;
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            z-index: 2; /* Ensure it's above the overlay */
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .developer-name {
+            font-weight: bold;
+            color: #1900ff;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navigation Buttons (Top-Right Corner) -->
+    <div class="nav-buttons">
+        <a href="{{ url_for('login') }}" class="nav-btn">Login</a>
+        <a href="{{ url_for('about') }}" class="nav-btn">About Us</a>
+    </div>
+
+    <!-- Welcome Message Container -->
+    <div class="welcome-container">
+        <h1>Welcome to AI ChatBot</h1>
+        <p>
+            Meet our intelligent assistant! Our AI ChatBot is here to provide quick, smart, and friendly responses. 
+            Whether you need answers, assistance, or just want to chat, we've got you covered.
+        </p>
+        <p>
+            Here’s what you can expect:
+        </p>
+        <div class="expectations-container">
+            <h3>Features</h3>
+            <ul>
+                <li><strong>Smart Assistance:</strong> Get guidance on a wide range of topics, from general information to specific help with tasks.</li>
+                <li><strong>Interactive Experience:</strong> Engage with a bot that can understand your needs and offer relevant suggestions.</li>
+                <li><strong>Learning &amp; Adapting:</strong> Over time, our AI will improve its responses based on your interactions, making the experience smoother and more accurate.</li>
+                <li><strong>Accessible &amp; User-Friendly:</strong> Access the chatbot anytime, anywhere, using an intuitive interface that’s easy to navigate.</li>
+            </ul>
+        </div>
+        <p>
+            Our AI is here to make your life easier, answering your questions, helping with tasks, and even just offering a friendly chat. Start a conversation and explore what it can do for you!
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 MCBS Project, Oman. All rights reserved. Developed by <span class="developer-name">Saif Al Harthi</span> and <span class="developer-name">Jumana Al Mahruqi</span>.</p>
+    </footer>
+
+</body>
+</html>

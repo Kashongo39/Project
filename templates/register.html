@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        /* Body with background image and dark overlay */
+        body {
+            font-family: Arial, sans-serif;
+            background: url("{{ url_for('static', filename='bg.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        /* Dark overlay effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Darken the background */
+            z-index: -1; /* Ensure overlay is behind the content */
+        }
+
+        /* Container styling */
+        .container {
+            background: rgba(255, 255, 255, 0.2); /* Slightly transparent */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            text-align: center;
+            width: 350px;
+            backdrop-filter: blur(10px); /* Blur effect behind the content */
+        }
+
+        /* Header styling */
+        .container h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        /* Input fields */
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+        }
+
+        /* Register button */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Switch to Login link */
+        .switch {
+            margin-top: 10px;
+            color: white;
+        }
+
+        .switch a {
+            color: #ff416c;
+            text-decoration: none;
+        }
+
+        /* Footer styling */
+        footer {
+            width: 100%;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .developer-name {
+            font-weight: bold;
+            color: #1900ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Register</h2>
+        
+        <form method="POST">
+            <input type="text" name="username" class="input-field" placeholder="Username" required><br>
+            <input type="email" name="email" class="input-field" placeholder="Email" required><br>
+            <input type="password" name="password" class="input-field" placeholder="Password" required><br>
+            <input type="password" name="confirm_password" class="input-field" placeholder="Confirm Password" required><br>
+            <button type="submit" class="btn">Register</button>
+        </form>
+
+        <p class="switch">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+    </div>
+
+    <footer>
+        <p>© 2025 MCBS Project, Oman. All rights reserved. Developed by <span class="developer-name">Saif Al Harthi</span> and <span class="developer-name">Jumana Al Mahruqi</span>.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - AI ChatBot</title>
+    <style>
+        /* Body with background image and dark overlay */
+        body {
+            font-family: Arial, sans-serif;
+            background: url("{{ url_for('static', filename='bg.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        /* Dark overlay effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Darken the background */
+            z-index: -1; /* Ensure overlay is behind the content */
+        }
+
+        /* Container styling */
+        .container {
+            background: rgba(255, 255, 255, 0.2); /* Slightly transparent */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            text-align: center;
+            width: 600px;
+            backdrop-filter: blur(10px); /* Blur effect behind the content */
+        }
+
+        /* Header styling */
+        .container h1 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            font-weight: bold; /* Ensure the heading is bold */
+        }
+
+        /* Paragraph styling */
+        .container p {
+            color: white;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            opacity: 1; /* Ensure text is visible */
+        }
+
+        /* Ensure spans inside container paragraphs inherit styles */
+        .container p span.developer-name {
+            color: #00ffcc !important;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);
+        }
+
+        /* Developer name styling (for footer only) */
+        footer .developer-name {
+            font-weight: bold;
+            color: #1900ff !important;
+        }
+
+        /* Button styling - reverted to original */
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        }
+
+        /* Footer styling */
+        footer {
+            width: 100%;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 2; /* Ensure it's above the chat window */
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>About AI ChatBot</h1>
+        <p id="text1"></p>
+        <p id="text2"></p>
+        <p id="text3"></p>
+        <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 MCBS Project, Oman. All rights reserved. Developed by <span class="developer-name">Saif Al Harthi</span> and <span class="developer-name">Jumana Al Mahruqi</span>.</p>
+    </footer>
+
+    <script>
+        // Function to create a typewriter effect
+        function typeWriter(element, text, delay = 50) {
+            let i = 0;
+            let tempDiv = document.createElement('div');
+            element.innerHTML = ""; // Clear the element's content
+            
+            function type() {
+                if (i < text.length) {
+                    tempDiv.innerHTML = text.substring(0, i + 1);
+                    element.innerHTML = tempDiv.innerHTML;
+                    i++;
+                    setTimeout(type, delay);
+                }
+            }
+            type();
+        }
+
+        // Get the paragraphs
+        const text1 = document.getElementById("text1");
+        const text2 = document.getElementById("text2");
+        const text3 = document.getElementById("text3");
+
+        // Define the text content
+        const content1 = "AI ChatBot is a chatbot designed to provide users with accurate and helpful responses to a wide range of questions. Whether you need information, assistance, or just want to chat, our AI is here to help!";
+        const content2 = 'This project was developed by <span class="developer-name">Saif Al Harthi</span> and <span class="developer-name">Jumana Al Mahruqi</span> as part of their efforts to create an interactive and intelligent chatbot that can serve users in real-time.';
+        const content3 = "The purpose of this project is to demonstrate the capabilities of AI in natural language processing and to provide a user-friendly platform for interaction. We hope you enjoy using AI ChatBot!";
+
+        // Apply the typewriter effect to each paragraph with a delay
+        setTimeout(() => typeWriter(text1, content1), 500); // Start after 500ms
+        setTimeout(() => typeWriter(text2, content2), 500 + content1.length * 50 + 1000); // Start after the first paragraph finishes + 1 second
+        setTimeout(() => typeWriter(text3, content3), 500 + (content1.length + content2.length) * 50 + 2000); // Start after the second paragraph finishes + 2 seconds
+    </script>
+</body>
+</html>
